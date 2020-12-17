@@ -42,11 +42,14 @@ BigInt gcd(BigInt a, BigInt b)
     }
 
     while (a.isPositive()) {
-        while (a.isEven()) a.Devision_to_2();
-        while (b.isEven()) b.Devision_to_2();
+        while (a.isEven()) 
+            a.Devision_to_2();
+        while (b.isEven()) 
+            b.Devision_to_2();
         
 
-        BigInt t = abs(a - b) / 2;
+        BigInt t = abs(a - b);
+        t.Devision_to_2();
         if (a >= b)
             a = t;
         else
@@ -60,12 +63,13 @@ BigInt gcd(BigInt a, BigInt b)
 int main()
 {
 
-    //std::cout << "GCD 20,10=" << gcd(10, 20);
-    BigInt x = 1234;
-    BigInt y = 2345;
+    BigInterger x ( 18);
+    BigInterger y ( 6);
 
-    BigInt g = gcd(x, y);
+   BigInterger z = x % y;
+    BigInt x1(8);
+    BigInt y1(6);
 
-    
-    std::cout << x;
+    BigInt z1 = PowerMod(x1,y1,1000000000);
+    std::cout << z;
 }

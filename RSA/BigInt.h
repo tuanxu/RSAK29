@@ -8,7 +8,7 @@ public:
     //head =0, tail = 5
     bool neg = false;
     char number[1024];
-    bool bnumber[1024*8];
+    bool bnumber[1024 * 8] = { false };
     unsigned char head = 0;
     unsigned char tail = 0;
     int digits = 0; //number of digits in big int
@@ -56,6 +56,8 @@ public:
 
     friend BigInt abs(BigInt bigint);
 
+    
+
     friend BigInt operator + (BigInt first, BigInt second);
 
     friend BigInt operator + (BigInt bigint);
@@ -72,7 +74,7 @@ public:
     friend BigInt operator % (BigInt first, BigInt second);
 
 
-    friend BigInt pow(BigInt x, BigInt y, BigInt mod);
+    friend BigInt PowerMod(BigInt first, BigInt second, BigInt mod);
 
     friend BigInt operator & (BigInt first_, BigInt second_);
 
@@ -80,9 +82,9 @@ public:
 
     friend BigInt operator ^ (BigInt first_, BigInt second_);
 
-    friend BigInt operator << (BigInt first, BigInt second);
+    //friend BigInt operator << (BigInt first, BigInt second);
 
-    friend BigInt operator >> (BigInt first, BigInt second);
+    //friend BigInt operator >> (BigInt first, BigInt second);
 
     int to_int(BigInt bigint);
 
@@ -106,8 +108,8 @@ public:
     void operator |= (BigInt bigint);
     void operator ^= (BigInt bigint);
 
-    void operator <<= (BigInt bigint);
-    void operator >>= (BigInt bigint);
+    //void operator <<= (BigInt bigint);
+    //void operator >>= (BigInt bigint);
     
     
     

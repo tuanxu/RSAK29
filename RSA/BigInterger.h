@@ -5,7 +5,7 @@ class BigInterger {
 public:
     bool neg = false;
     std::string number = "0";
-    /*
+    
     BigInterger() {}
 
     BigInterger(const BigInterger& other) {
@@ -663,5 +663,5 @@ public:
 
     void operator <<= (BigInterger bigint) { *(this) = *(this) << bigint; }
     void operator >>= (BigInterger bigint) { *(this) = *(this) >> bigint; }
-    */
+    
 };
