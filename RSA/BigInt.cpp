@@ -313,6 +313,16 @@ BigInt operator * (BigInt first, BigInt second) {
 
     BigInt result;
 
+    if ((first.tail - first.head == 0 && !first.bnumber[first.head])
+        || second.tail - second.head == 0 && !second.bnumber[second.head])
+        return result; //return 0
+
+    if (first.tail - first.head == 0 && first.bnumber[first.head]) // = 1
+        return second; 
+
+    if (second.tail - second.head == 0 && second.bnumber[second.head]) // = 1
+        return first;
+
     if (second.bnumber[second.head])
         result = first;
 
@@ -450,12 +460,56 @@ BigInt operator % (BigInt first, BigInt second) {
 
       while (first > second) 
             first -= second;
-            
+        // Initialize result 
+
+    /*int res = 0;
+
+    // One by one process all digits of 'num' 
+    for (int i = 0; i < num.length(); i++)
+        res = (res * 10 + (int)num[i] - '0') % a;
+
+    return res;
+
+        BigInt res = 0;
+        if (first == second)
+            return res; //return 0
+
+        for (int i = first.tail; i >= first.head; i--) {
+            res.Multiply_to_2();
+            res = (res + (int)first.bnumber[i]);
+            res = res % second;
+        }
+        
+            */
         
       first.Update();
       return first;
 }
 
+BigInt MulMod(BigInt first, BigInt second, BigInt mod) {
+    if (mod != 0)
+        first %= mod;
+
+    BigInt p = 0;
+   
+    if (second.bnumber[second.head])
+        p = first;
+
+    for (int i = 1; i < second.digits; i++) {
+        //A = (A * A)%mod;
+        first.Multiply_to_2();
+        first = first % mod;
+        
+
+        if (second.bnumber[second.head + i])
+             p = (p + first) % mod;
+
+
+    }
+
+    p.Update();
+    return p;
+}
 
 BigInt PowerMod(BigInt first, BigInt second, BigInt mod) {
     if (mod != 0)
@@ -470,9 +524,12 @@ BigInt PowerMod(BigInt first, BigInt second, BigInt mod) {
     if (second.bnumber[second.head] == 1)
         y = first;
     for (int i = 1; i < second.digits; i++) {
-        A = (A * A)%mod;
+        //A = (A * A)%mod;
+        A = MulMod(A, A, mod);
+
         if (second.bnumber[second.head + i] == 1)
-            y = (A * y) % mod;
+            //y = (A * y) % mod;
+            y = MulMod(A, y, mod);
 
 
     }
@@ -676,4 +733,18 @@ void BigInt::Multiply_to_2() {
 }
 bool BigInt::isPositive() {
     return (this->bnumber[this->tail] && !this->neg) ;
+}
+
+void BigInt::RandomPrimeCandidate() {
+    //this is for test
+    int min_n = 500;
+    int max_n = 600;
+
+    srand(time(NULL));
+    this->head = 1;
+    this->tail = rand() % (max_n - min_n) + min_n;
+    for (int i = this->head; i <= this->tail; i++)
+        this->bnumber[i] = rand() % 2;
+    this->bnumber[--this->head] = true;
+    Update();
 }

@@ -61,8 +61,8 @@ BigInt gcd(BigInt a, BigInt b)
     return g;
 }
 
-#define PRIME 1
-#define COMPOSITE 0
+#define PRIME true
+#define COMPOSITE false
 
 int mod_power(int a, int b, int p) {
     if (b == 1) {
@@ -79,21 +79,8 @@ int mod_power(int a, int b, int p) {
     }
 }
 
-int fermat_testing(int N, int a) {
-    if (gcd(a, N) != 1) {
-        return COMPOSITE;
-    }
-    else {
-        if (mod_power(a, N - 1, N) != 1) {
-            return COMPOSITE;
-        }
-        else {
-            return PRIME;
-        }
-    }
 
-}
-int fermat_testing(BigInt N, int a) {
+bool fermat_testing(BigInt N, int a) {
     BigInt Ba(a);
 
     if (gcd(Ba, N) != 1) {
@@ -109,28 +96,47 @@ int fermat_testing(BigInt N, int a) {
     }
 
 }
+bool fermat_testing(BigInt x) {
+
+    bool t1 = fermat_testing(x, 2);
+    bool t2 = fermat_testing(x, 3);
+
+    return t1 && t2;
+
+}
+BigInt PrimeGen() {
+
+    BigInt x;
+
+    x.RandomPrimeCandidate();
+    int count = 0; //for debug
+    while (!fermat_testing(x))
+    {
+        x = x + 2;
+        count++;
+    }
+    return x;
+}
+
 int main()
 {
     /*
-    BigInterger x ( 18);
-    BigInterger y ( 6);
-
-   BigInterger z = x % y;
-    BigInt x1(8);
-    BigInt y1(6);
-
-    BigInt z1 = PowerMod(x1,y1,1000000000);
-    std::cout << z;
-    */
-
-
-
-
-
-    BigInt x(2649);
+    BigInt x ( 10);
     BigInt y(10);
-    BigInt z(11);
-    BigInt t = PowerMod(x, y, z);
-    int t1 = fermat_testing(x,2);
-    int t2 = fermat_testing(x,3);
+    BigInt z(91);
+
+    BigInt t = MulMod(x, y, z);
+   
+    //std::string num = "18";
+    //std::cout << mod(num, 5);
+
+*/
+    BigInt x = PrimeGen();
+   
+    bool t1 = fermat_testing(x, 2);
+    bool t2 = fermat_testing(x, 3);
+    bool t3 = fermat_testing(x, 5);
+
+   
+
 }

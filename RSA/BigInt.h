@@ -30,6 +30,7 @@ public:
     void Devision_to_2();
     void Multiply_to_2();
     bool isPositive();
+    void RandomPrimeCandidate();
 
     friend bool operator == (BigInt first, BigInt second); 
 
@@ -75,6 +76,7 @@ public:
 
 
     friend BigInt PowerMod(BigInt first, BigInt second, BigInt mod);
+    friend BigInt MulMod(BigInt first, BigInt second, BigInt mod);
 
     friend BigInt operator & (BigInt first_, BigInt second_);
 
