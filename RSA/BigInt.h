@@ -6,13 +6,13 @@ public:
     //Cho so nguyen duong 123456
     //Luu duoi dang chuoi "654321"
     //head =0, tail = 5
+    int _value = 0;
     bool neg = false;
-    char number[1024];
+    //char number[1024];
     bool bnumber[1024 * 8] = { false };
     unsigned char head = 0;
     unsigned char tail = 0;
     int digits = 0; //number of digits in big int
-    int _value = 0;
 
     BigInt() {};
 
@@ -20,11 +20,11 @@ public:
 
     BigInt(long long int number);
 
-    BigInt(const char* number);
+    //BigInt(const char* number);
 
     void Reset();
     void SetValue(long long int number);
-    void SetValue(const char* number);
+    //void SetValue(const char* number);
     void Update();
     bool isEven();
     void Devision_to_2();
@@ -48,9 +48,9 @@ public:
 
     void operator = (long long int number);
 
-    friend std::istream& operator >> (std::istream& in, BigInt& bigint);
+   // friend std::istream& operator >> (std::istream& in, BigInt& bigint);
 
-    friend std::ostream& operator << (std::ostream& out, const BigInt& bigint);
+    //friend std::ostream& operator << (std::ostream& out, const BigInt& bigint);
 
     friend void swap(BigInt& first, BigInt& second);
 
@@ -68,8 +68,8 @@ public:
 
     friend BigInt operator * (BigInt first, BigInt second);
 
-    friend BigInt operator / (BigInt first, BigInt second);
-    friend BigInt operator / (BigInt first, int second);
+    //friend BigInt operator / (BigInt first, BigInt second);
+    //friend BigInt operator / (BigInt first, int second);
 
     friend BigInt operator % (BigInt first, BigInt second);
 
@@ -86,11 +86,11 @@ public:
 
     //friend BigInt operator >> (BigInt first, BigInt second);
 
-    int to_int(BigInt bigint);
+    //int to_int(BigInt bigint);
 
-    std::string int_to_base(int base);
+    //std::string int_to_base(int base);
 
-    BigInt base_to_int(std::string str, int base);
+    //BigInt base_to_int(std::string str, int base);
 
     int size();
 
