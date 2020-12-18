@@ -14,7 +14,7 @@ void BigInt::Update() {
         this->tail--;
     digits = tail - head + 1;
     for (int i = tail; i >= head; i--)
-        result = result * 2 + bnumber[i];
+        result = result * 2 + (bnumber[i]?1:0);
     _value = result;
 }
 BigInt::BigInt(const BigInt& other) {
@@ -22,7 +22,7 @@ BigInt::BigInt(const BigInt& other) {
     this->head = other.head;
     this->tail = other.tail;
     this->digits = other.digits;
-
+    //this->bnumber = new bool[8192]{ false };
     for (int i = other.head; i <= other.tail; i++)
         this->bnumber[i] = other.bnumber[i];
     Update(); //this is for debug
@@ -55,28 +55,14 @@ void BigInt::SetValue(long long int number) {
     Update(); //this is for debug
 }
 BigInt::BigInt(long long int number) {
-    SetValue(number);
-}
-/*void BigInt::SetValue(const char* number) {
-    int n = strlen(number);
-    if (number[0] == '-') {
-        this->neg = true;
-        n--;
-    }
+    this->neg = 0;
     this->head = 0;
     this->tail = 0;
-    int pos = this->head;
-    for (int i = n-1; i >=0; i--)
-        this->number[pos++] = number[i] - '0';
-    this->tail = pos - 1;
-    this->digits = pos;
-    Update();
-}
-BigInt::BigInt(const char* number){
+    this->digits = 0;
+    //this->bnumber = new bool[1024 * 8]{ false };
     SetValue(number);
-    
 }
-*/
+
 bool operator == (BigInt first, BigInt second) {
     if ((second.neg != first.neg) || (first.digits != second.digits))
         return false;
@@ -159,51 +145,29 @@ bool operator >= (BigInt first, int second) {
 void BigInt::operator = (long long int number) {
     SetValue(number);
 }
-/*
-std::istream& operator >> (std::istream& in, BigInt& bigint) {
-    std::string number; in >> number;
 
-    bigint.SetValue(number.c_str());
-
-    return in;
-}
-
-std::ostream& operator << (std::ostream& out, const BigInt& bigint) {
-    std::string number;
-
-    if (bigint.neg)
-        number = '-' + number;
-
-    for (int i = bigint.tail; i >= bigint.head; i--)
-        number += bigint.bnumber[i] + '0';
-
-    out << number;
-
-    return out;
-}
-*/
-void swap(BigInt& first, BigInt& second) {
+void swap(BigInt &first, BigInt &second) {
     BigInt temp(first);
 
     first = second;
     second = temp;
 }
 
-BigInt abs(BigInt bigint) {
+BigInt BigIntAbs(BigInt bigint) {
     bigint.neg = false;
 
     return bigint;
 }
 
-BigInt operator + (BigInt first, BigInt second) {
+BigInt Plus(BigInt first, BigInt second) {
     bool neg = false;
 
     if (!first.neg && second.neg) {
-        second.neg = false; return first - second;
+        second.neg = false; return Minus( first , second);
     }
 
     if (first.neg && !second.neg) {
-        first.neg = false; return second - first;
+        first.neg = false; return Minus(second , first);
     }
 
     if (first.neg && second.neg) {
@@ -217,7 +181,7 @@ BigInt operator + (BigInt first, BigInt second) {
 
     int carry = 0;
 
-    BigInt result;
+    BigInt result(0);
 
     for (int i = 0; i < max; i++) {
         int add = carry;
@@ -246,28 +210,26 @@ BigInt operator + (BigInt first, BigInt second) {
     return result;
 }
 
-BigInt operator + (BigInt bigint) {
-    return bigint;
-}
 
-BigInt operator - (BigInt first, BigInt second) {
+
+BigInt Minus (BigInt first, BigInt second) {
     if (second.neg) {
         second.neg = false;
-        return first + second;
+        return Plus(first , second);
     }
 
     if (first.neg) {
         second.neg = true;
-        return first + second;
+        return Plus(first, second);
     }
 
     bool neg = false;
 
-    if (first < abs(second)) {
+    if (first < BigIntAbs(second)) {
         neg = true;
 
         swap(first, second);
-        first = abs(first);
+        first = BigIntAbs(first);
     }
 
     int n = first.digits;
@@ -275,7 +237,7 @@ BigInt operator - (BigInt first, BigInt second) {
     int max = std::max(n, m);
     int carry = 0;
 
-    BigInt result;
+    BigInt result(0);
 
     for (int i = 0; i < max; i++) {
         int add = carry;
@@ -297,12 +259,8 @@ BigInt operator - (BigInt first, BigInt second) {
     result.Update();
     return result;
 }
-/*
-BigInt operator - (BigInt second) {
-    BigInt first("0"); return first - second;
-}
-*/
-BigInt operator * (BigInt first, BigInt second) {
+
+BigInt Multiply (BigInt first, BigInt second) {
     bool neg = first.neg != second.neg;
 
     first.neg = false;
@@ -311,7 +269,7 @@ BigInt operator * (BigInt first, BigInt second) {
     int n = first.digits;
     int m = second.digits;
 
-    BigInt result;
+    BigInt result (0);
 
     if ((first.tail - first.head == 0 && !first.bnumber[first.head])
         || second.tail - second.head == 0 && !second.bnumber[second.head])
@@ -331,7 +289,7 @@ BigInt operator * (BigInt first, BigInt second) {
         first.Multiply_to_2();
 
         if (second.bnumber[second.head + i])
-            result = (result + first);
+            result = Plus(result , first);
 
     }
 
@@ -340,114 +298,8 @@ BigInt operator * (BigInt first, BigInt second) {
 
     return result;
 }
-/*
-BigInt operator / (BigInt first, BigInt second) {
-    if (second == "0")
-        throw "Division with 0";
 
-    bool neg = first.neg != second.neg;
-
-    first.neg = false;
-    second.neg = false;
-
-    BigInt quotient;
-
-    int i = first.size() - 1;
-
-    BigInt current(first.bnumber[i] - '0');
-
-    --i;
-
-    while (true) {
-        BigInt result = current;
-
-        bool l = false;
-
-        while (result < second && i >= 0) {
-            result = result * 2 + (first.bnumber[i--] - '0');
-
-            if (l)
-                quotient *= 2;
-
-            l = true;
-        }
-
-        int c = 0;
-
-        BigInt result_(result);
-
-        while (result_ >= second) {
-            result_ -= second;
-            c++;
-        }
-
-        quotient = quotient * 2 + c;
-
-        current = result_;
-
-        if (i < 0)
-            break;
-    }
-
-    quotient.neg = neg;
-
-    return quotient;
-}
-
-BigInt operator / (BigInt first, int second) {
-    if (second == 0)
-        throw "Division with 0";
-
-    bool neg = first.neg != (second < 0);
-
-    first.neg = false;
-    
-
-    BigInt quotient;
-
-    int i = first.size() - 1;
-
-    BigInt current(first.number[i] - '0');
-
-    --i;
-
-    while (true) {
-        BigInt result = current;
-
-        bool l = false;
-
-        while (result < second && i >= 0) {
-            result = result * 2 + (first.number[i--] - '0');
-
-            if (l)
-                quotient *= 2;
-
-            l = true;
-        }
-
-        int c = 0;
-
-        BigInt result_(result);
-
-        while (result_ >= second) {
-            result_ -= second;
-            c++;
-        }
-
-        quotient = quotient * 2 + c;
-
-        current = result_;
-
-        if (i < 0)
-            break;
-    }
-
-    quotient.neg = neg;
-
-    return quotient;
-}
-*/
-BigInt operator % (BigInt first, BigInt second) {
+BigInt Modulo (BigInt first, BigInt second) {
     if (second == 0)
         throw "Modulo with 0";
 
@@ -458,29 +310,10 @@ BigInt operator % (BigInt first, BigInt second) {
         return first;
 
 
-      while (first > second) 
-            first -= second;
-        // Initialize result 
+    while (first > second) {
+        first = Minus(first , second);
+    }
 
-    /*int res = 0;
-
-    // One by one process all digits of 'num' 
-    for (int i = 0; i < num.length(); i++)
-        res = (res * 10 + (int)num[i] - '0') % a;
-
-    return res;
-
-        BigInt res = 0;
-        if (first == second)
-            return res; //return 0
-
-        for (int i = first.tail; i >= first.head; i--) {
-            res.Multiply_to_2();
-            res = (res + (int)first.bnumber[i]);
-            res = res % second;
-        }
-        
-            */
         
       first.Update();
       return first;
@@ -488,7 +321,7 @@ BigInt operator % (BigInt first, BigInt second) {
 
 BigInt MulMod(BigInt first, BigInt second, BigInt mod) {
     if (mod != 0)
-        first %= mod;
+        first = Modulo( first , mod);
 
     BigInt p = 0;
    
@@ -498,11 +331,11 @@ BigInt MulMod(BigInt first, BigInt second, BigInt mod) {
     for (int i = 1; i < second.digits; i++) {
         //A = (A * A)%mod;
         first.Multiply_to_2();
-        first = first % mod;
+        first = Modulo(first, mod);
         
 
         if (second.bnumber[second.head + i])
-             p = (p + first) % mod;
+             p = Modulo(Plus(p , first) , mod);
 
 
     }
@@ -513,7 +346,7 @@ BigInt MulMod(BigInt first, BigInt second, BigInt mod) {
 
 BigInt PowerMod(BigInt first, BigInt second, BigInt mod) {
     if (mod != 0)
-        first %= mod;
+        first = Modulo (first,mod);
 
     BigInt y = 1;
     if (second == 0) {
@@ -537,181 +370,9 @@ BigInt PowerMod(BigInt first, BigInt second, BigInt mod) {
     y.Update();
     return y;
 }
-/*
-BigInt operator & (BigInt first_, BigInt second_) {
-    std::string first = first_.int_to_base(2);
-    std::string second = second_.int_to_base(2);
 
-    unsigned int n = std::min(first.size(), second.size());
 
-    reverse(first.begin(), first.end());
-    reverse(second.begin(), second.end());
 
-    std::string result(n, '~');
-
-    for (unsigned int i = 0; i < n; i++) {
-        if (first[i] == '1' && second[i] == '1')
-            result[i] = '1';
-        else
-            result[i] = '0';
-    }
-
-    reverse(result.begin(), result.end());
-
-    return BigInt().base_to_int(result, 2);
-}
-
-BigInt operator | (BigInt first_, BigInt second_) {
-    std::string first = first_.int_to_base(2);
-    std::string second = second_.int_to_base(2);
-
-    unsigned int n = std::max(first.size(), second.size());
-
-    reverse(first.begin(), first.end());
-    reverse(second.begin(), second.end());
-
-    std::string result(n, '~');
-
-    for (unsigned int i = 0; i < n; i++) {
-        if (first.size() <= i || second.size() <= i) {
-            if (first.size() > i) result[i] = first[i];
-            if (second.size() > i) result[i] = second[i];
-
-            continue;
-        }
-
-        if (first[i] == '1' || second[i] == '1')
-            result[i] = '1';
-        else
-            result[i] = '0';
-    }
-
-    reverse(result.begin(), result.end());
-
-    return BigInt().base_to_int(result, 2);
-}
-
-BigInt operator ^ (BigInt first_, BigInt second_) {
-    std::string first = first_.int_to_base(2);
-    std::string second = second_.int_to_base(2);
-
-    unsigned int n = std::max(first.size(), second.size());
-
-    reverse(first.begin(), first.end());
-    reverse(second.begin(), second.end());
-
-    std::string result(n, '~');
-
-    for (unsigned int i = 0; i < n; i++) {
-        if (first.size() <= i || second.size() <= i) {
-            if (first.size() > i) {
-                if (first[i] == '0')
-                    result[i] = '0';
-                else
-                    result[i] = '1';
-            }
-
-            if (second.size() > i) {
-                if (second[i] == '0')
-                    result[i] = '0';
-                else
-                    result[i] = '1';
-            }
-
-            continue;
-        }
-
-        if (first[i] == second[i])
-            result[i] = '0';
-        else
-            result[i] = '1';
-    }
-
-    reverse(result.begin(), result.end());
-
-    return BigInt().base_to_int(result, 2);
-}
-
-BigInt operator << (BigInt first, BigInt second) {
-    BigInt x = pow(2, second, BigInt("0"));
-
-    return first * x;
-}
-
-BigInt operator >> (BigInt first, BigInt second) {
-    BigInt x = pow(2, second, BigInt("0"));
-
-    return first / x;
-}
-
-int BigInt::to_int(BigInt bigint) {
-    int n = 0;
-
-    for (int i = bigint.digits - 1; i >= 0; i--)
-        n = (n * 10) + (bigint.bnumber[i] - '0');
-
-    return n;
-}
-
-std::string BigInt::int_to_base(int base) {
-    std::string result;
-    
-    BigInt bigint(*this);
-
-    while (bigint > 0) {
-        BigInt r = (bigint % base);
-
-        if (r >= 10)
-            result += (char)(to_int(r / 10) + 'A');
-        else
-            result += (char)(to_int(r) + '0');
-
-        bigint /= base;
-    }
-
-    reverse(result.begin(), result.end());
-    
-    return result;
-}
-
-BigInt BigInt::base_to_int(std::string str, int base) {
-    BigInt result;
-
-    for (unsigned int i = 0; i < str.size(); i++) {
-        BigInt add;
-
-        if ('0' <= str[i] && str[i] <= '9')
-            add += str[i] - '0';
-        else
-            add += (str[i] - 'A') + 10;
-
-        result = result * base + add;
-    }
-
-    return result;
-}
-*/
-int BigInt::size() {
-    return this->digits;
-}
-
-//void BigInt::operator ++ () { *(this) = *(this) + 1; }
-//void BigInt::operator -- () { *(this) = *(this) - 1; }
-
-void BigInt::operator += (BigInt bigint) { *(this) = *(this) + bigint; }
-void BigInt::operator -= (BigInt bigint) { *(this) = *(this) - bigint; }
-
-void BigInt::operator *= (BigInt bigint) { *(this) = *(this) * bigint; }
-//void BigInt::operator /= (BigInt bigint) { *(this) = *(this) / bigint; }
-void BigInt::operator %= (BigInt bigint) { *(this) = *(this) % bigint; }
-
-//void BigInt::operator &= (BigInt bigint) { *(this) = *(this) & bigint; }
-//void BigInt::operator |= (BigInt bigint) { *(this) = *(this) | bigint; }
-//void BigInt::operator ^= (BigInt bigint) { *(this) = *(this) ^ bigint; }
-/*
-void BigInt::operator <<= (BigInt bigint) { *(this) = *(this) << bigint; }
-void BigInt::operator >>= (BigInt bigint) { *(this) = *(this) >> bigint; }
-*/
 bool BigInt::isEven() {
     return this->bnumber[this->head] == 0;
 }
@@ -737,10 +398,10 @@ bool BigInt::isPositive() {
 
 void BigInt::RandomPrimeCandidate() {
     //this is for test
-    int min_n = 500;
-    int max_n = 600;
+    int min_n = 5;
+    int max_n = 10;
 
-    srand(time(NULL));
+    
     this->head = 1;
     this->tail = rand() % (max_n - min_n) + min_n;
     for (int i = this->head; i <= this->tail; i++)
