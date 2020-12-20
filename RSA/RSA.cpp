@@ -107,7 +107,7 @@ BigInt CRSA::encrypt(BigInt N, BigInt e, BigInt M)
     
     return c;
 }
-
+/*
 BigInt CRSA::calculate_d(BigInt phi, BigInt  e)
 {
 	BigInt rel(5);
@@ -115,30 +115,37 @@ BigInt CRSA::calculate_d(BigInt phi, BigInt  e)
         rel = Plus(rel , 1);
     return rel;
 }
-	/*
+	*/
+
 BigInt CRSA::calculate_d(BigInt phi, BigInt  e)
 {
-    BigInt d, y, x1, x2, y1, y2, temp, r, orig_phi;
-    orig_phi = phi;
-    x2 = 1; x1 = 0; y2 = 0; y1 = 1;
-    while (e > 0)
+    BigInt inv, u1, u3, v1, v3, t1, t3, q;
+    BigInt iter;
+    u1 = 1;
+    u3 = e;
+    v1 = 0;
+    v3 = phi;
+    iter = 1;
+    while(v3 != 0)
     {
-        temp = Divide(phi , e);
-        r = Minus(phi , MulMod(temp , e,phi));
-        x = Minus(x2 , MulMod(temp , x1,phi));
-        y = Minus(y2 , MulMod(temp , y1,phi));
-        phi = e; e = r;
-        x2 = x1; x1 = x;
-        y2 = y1; y1 = y;
-        if (phi == 1)
-        {
-            y2 = Plus(y2, orig_phi);
-            break;
-        }
+        q = Divide(u3 , v3);
+        t3 = Modulo (u3 , v3);
+        t1 = Plus(u1 , MulMod(q , v1,phi));
+        u1 = v1;
+        v1 = t1;
+        u3 = v3;
+        v3 = t3;
+        iter.neg = !iter.neg;
     }
-    return y2;
+    if(u3 != 1)
+        return  0;
+    if(iter < 0)
+        inv = Minus(phi , u1);
+    else
+        inv = u1;
+    return inv;
 }
-*/
+
 BigInt CRSA::decrypt(BigInt c,BigInt  d,BigInt  N)
 {
 	BigInt m = PowerMod(c,d,N);	

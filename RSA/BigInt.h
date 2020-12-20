@@ -25,7 +25,16 @@ public:
     int digits = 0; //number of digits in big int
 
 #endif
-    BigInt() {};
+    BigInt() {
+    _value = 0;
+    neg = false;
+    //char number[1024];
+    head = 0;
+    tail = 0;
+    digits = 1; //number of digits in big int
+	
+	
+	};
 
     BigInt(const BigInt& other);
 

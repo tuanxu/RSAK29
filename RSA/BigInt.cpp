@@ -39,7 +39,10 @@ void BigInt::SetValue(long long int number) {
     if (number == 0) {
         this->head = 0;
         this->tail = 0;
+		this->neg = false;
         this->bnumber[this->tail] = 0;
+		this->digits=1;
+		this->Update();
         return;
     }
     this->head = 0;
@@ -312,7 +315,7 @@ BigInt Modulo (BigInt first, BigInt second) {
         return first;
 
 
-    while (first > second) {
+    while (first >= second) {
         first = Minus(first , second);
     }
 
@@ -419,8 +422,8 @@ bool BigInt::isPositive() {
 
 void BigInt::RandomPrimeCandidate() {
     //this is for test
-    int min_n = 5;
-    int max_n = 10;
+    int min_n = 50;
+    int max_n = 100;
 
     
     this->head = 1;
