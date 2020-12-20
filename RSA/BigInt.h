@@ -1,11 +1,21 @@
 #include <iostream>
 #include <algorithm>
-
+#include "stdafx.h"
+#include "define.h"
 class BigInt {
 public:
     //Cho so nguyen duong 123456
     //Luu duoi dang chuoi "654321"
     //head =0, tail = 5
+#if VS_2010
+    int _value;
+    bool neg;
+    //char number[1024];
+    bool bnumber[1024*8] ;
+    int head;
+    int tail;
+    int digits; //number of digits in big int
+#else
     int _value = 0;
     bool neg = false;
     //char number[1024];
@@ -14,6 +24,7 @@ public:
     int tail = 0;
     int digits = 0; //number of digits in big int
 
+#endif
     BigInt() {};
 
     BigInt(const BigInt& other);
@@ -67,6 +78,7 @@ public:
 
  
     friend BigInt Multiply (BigInt first, BigInt second);
+    friend BigInt Divide (BigInt first, BigInt second);
 
 
     friend BigInt Modulo (BigInt first, BigInt second);

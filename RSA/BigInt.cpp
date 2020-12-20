@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "BigInt.h"
 
 void BigInt::Reset(){
@@ -22,7 +23,8 @@ BigInt::BigInt(const BigInt& other) {
     this->head = other.head;
     this->tail = other.tail;
     this->digits = other.digits;
-    //this->bnumber = new bool[8192]{ false };
+    memset(this->bnumber, false, sizeof(this->bnumber));
+
     for (int i = other.head; i <= other.tail; i++)
         this->bnumber[i] = other.bnumber[i];
     Update(); //this is for debug
@@ -77,8 +79,8 @@ bool operator != (BigInt first, BigInt second) {
 bool operator == (BigInt first, int second) {
     if (first.neg != (second < 0))
         return false;
-    for (int i = 0; i < first.digits; i++) {
-        if (first.bnumber[first.tail - i] != (second % 2 == 1))
+    for (int i = first.head; i <= first.tail; i++) {
+        if (first.bnumber[i] != (second % 2 == 1))
             return false;
         second /= 2;
     }
@@ -197,8 +199,8 @@ BigInt Plus(BigInt first, BigInt second) {
 
     if (carry != 0) {
         result.bnumber[max] = carry;
-        result.tail = max+2;
-        result.digits = max + 2;
+        result.tail = max;
+        result.digits = max + 1;
     }
     else
     {
@@ -318,7 +320,26 @@ BigInt Modulo (BigInt first, BigInt second) {
       first.Update();
       return first;
 }
+BigInt Divide (BigInt first, BigInt second) {
+    if (second == 0)
+        throw "Divide with 0";
 
+    first.neg = false;
+    second.neg = false;
+
+    if (first < second)
+        return 0;
+
+	BigInt result = 0;
+    while (first > second) {
+        first = Minus(first , second);
+		result = Plus(result,1);
+    }
+
+        
+      result.Update();
+      return result;
+}
 BigInt MulMod(BigInt first, BigInt second, BigInt mod) {
     if (mod != 0)
         first = Modulo( first , mod);
@@ -386,7 +407,7 @@ void BigInt::Multiply_to_2() {
     if (this->tail < 1024 * 8) {
         for (int i = this->tail; i >= this->head; i--)
             this->bnumber[i + 1] = this->bnumber[i];
-        this->bnumber[head] = 0;
+        this->bnumber[head] = false;
         this->tail++;
     }
     Update();
