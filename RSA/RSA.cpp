@@ -1,4 +1,7 @@
+
+#if VS_2010
 #include "StdAfx.h"
+#endif
 #include "RSA.h"
 #define PRIME true
 #define COMPOSITE false
@@ -150,4 +153,35 @@ BigInt CRSA::decrypt(BigInt c,BigInt  d,BigInt  N)
 {
 	BigInt m = PowerMod(c,d,N);	
     return m;
+}
+
+int main()
+{
+    
+    srand(time(NULL));
+    CRSA rsa;
+    //BigInt x(28657);
+    //bool res = rsa.fermat_testing(x);
+    //int d1 = calculate_d(20,7);
+
+    //BigInt x(1000000000);
+    //BigInt y(3);
+    //BigInt z = Modulo2(x, y);
+   
+    BigInt P = rsa.PrimeGen();
+    BigInt Q = rsa.PrimeGen();
+
+    BigInt N = Multiply(P, Q);
+    BigInt phi = Multiply(Minus(P, 1), Minus(Q, 1));
+
+    BigInt e = rsa.rel_prime(phi);
+    BigInt d = rsa.calculate_d(phi, e);
+
+    BigInt M = 6;
+
+    BigInt c = rsa.encrypt(N, e, M);
+
+    BigInt M1 = rsa.decrypt(c, d, N);
+    
+    return 0;
 }

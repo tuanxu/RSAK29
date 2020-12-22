@@ -1,6 +1,8 @@
 #include <iostream>
 #include <algorithm>
+#if VS_2010
 #include "stdafx.h"
+#endif
 #include "define.h"
 class BigInt {
 public:
@@ -90,7 +92,8 @@ public:
     friend BigInt Divide (BigInt first, BigInt second);
 
 
-    friend BigInt Modulo (BigInt first, BigInt second);
+    friend BigInt Modulo(BigInt first, BigInt second);
+    friend BigInt Modulo2(BigInt first, BigInt second);
 
 
     friend BigInt PowerMod(BigInt first, BigInt second, BigInt mod);

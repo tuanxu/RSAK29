@@ -1,4 +1,6 @@
+#if VS_2010
 #include "stdafx.h"
+#endif
 #include "BigInt.h"
 
 void BigInt::Reset(){
@@ -314,6 +316,8 @@ BigInt Modulo (BigInt first, BigInt second) {
     if (first < second)
         return first;
 
+    if (first.digits - second.digits >= 10)
+        return Modulo2(first, second);
 
     while (first >= second) {
         first = Minus(first , second);
@@ -323,6 +327,111 @@ BigInt Modulo (BigInt first, BigInt second) {
       first.Update();
       return first;
 }
+
+
+BigInt Modulo2(BigInt first, BigInt second) {
+    if (second == 0)
+        throw "Divide with 0";
+
+    bool neg = first.neg != second.neg;
+
+    first.neg = false;
+    second.neg = false;
+
+    if (first < second)
+        return first;
+
+    BigInt carry(0);
+    BigInt result(0);
+    int pos = -1;
+
+    while (pos < first.digits - 1) {
+
+        //tach phan tu dau tien
+        if (pos == -1) {
+            for (pos = 0; pos < second.digits; pos++) {
+                carry.bnumber[second.digits - pos - 1] = first.bnumber[first.tail - pos];
+
+            }
+            pos = pos - 1;
+            carry.head = 0;
+            carry.tail = pos;
+            carry.Update();
+        }
+
+        //neu ko du chia thi add them 1 so
+        if (carry < second) {
+            pos++;
+            carry.Multiply_to_2();
+            carry = Plus(carry, first.bnumber[first.tail - pos] ? 1 : 0);
+            carry.Update();
+        }
+
+        result.Multiply_to_2();
+        if (carry >= second) {
+            result = Plus(result, 1);
+            carry = Minus(carry, second);
+        }
+
+    }
+
+
+    carry.neg = neg;
+    carry.Update();
+    return carry;
+}
+BigInt Divide(BigInt first, BigInt second) {
+    if (second == 0)
+        throw "Divide with 0";
+
+    bool neg = first.neg != second.neg;
+
+    first.neg = false;
+    second.neg = false;
+
+    if (first < second)
+        return 0;
+
+    BigInt carry(0);
+    BigInt result(0);
+    int pos = -1;
+
+    while (pos < first.digits -1) {
+
+        //tach phan tu dau tien
+        if (pos == -1) {
+            for (pos = 0; pos < second.digits; pos++) {
+                carry.bnumber[second.digits-pos-1] = first.bnumber[first.tail - pos];
+                
+            }
+            pos = pos - 1;
+            carry.head = 0;
+            carry.tail = pos;
+            carry.Update();
+        }
+
+        //neu ko du chia thi add them 1 so
+        if (carry < second) {
+            pos++;
+            carry.Multiply_to_2();
+            carry = Plus(carry, first.bnumber[first.tail - pos]?1:0);
+            carry.Update();
+        }
+        
+        result.Multiply_to_2();
+        if (carry >= second) {
+            result = Plus(result, 1);
+            carry = Minus(carry, second);
+        }
+        
+    }
+
+   
+    result.neg = neg;
+    result.Update();
+    return result;
+}
+/*
 BigInt Divide (BigInt first, BigInt second) {
     if (second == 0)
         throw "Divide with 0";
@@ -342,7 +451,7 @@ BigInt Divide (BigInt first, BigInt second) {
         
       result.Update();
       return result;
-}
+}*/
 BigInt MulMod(BigInt first, BigInt second, BigInt mod) {
     if (mod != 0)
         first = Modulo( first , mod);
