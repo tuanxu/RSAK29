@@ -8,6 +8,7 @@ void BigInt::Reset(){
     this->head = 0;
     this->tail = 0;
     this->digits = 0;
+    memset(this->bnumber, false, sizeof(this->bnumber));
     Update(); //this is for debug
 }
 
@@ -30,6 +31,9 @@ BigInt::BigInt(const BigInt& other) {
     for (int i = other.head; i <= other.tail; i++)
         this->bnumber[i] = other.bnumber[i];
     Update(); //this is for debug
+}
+BigInt::BigInt(std::string input) {
+    FromString(input);
 }
 
 void BigInt::SetValue(long long int number) {
@@ -216,8 +220,6 @@ BigInt Plus(BigInt first, BigInt second) {
     result.Update();
     return result;
 }
-
-
 
 BigInt Minus (BigInt first, BigInt second) {
     if (second.neg) {
@@ -541,4 +543,53 @@ void BigInt::RandomPrimeCandidate() {
         this->bnumber[i] = rand() % 2;
     this->bnumber[--this->head] = true;
     Update();
+}
+
+void BigInt::Random(int minnumbers, int maxnumbers) {
+
+
+    this->head = 0;
+    this->tail = rand() % (minnumbers - maxnumbers) + minnumbers;
+    for (int i = this->head; i <= this->tail; i++)
+        this->bnumber[i] = rand() % 2;
+    this->bnumber[this->tail] = true;
+    Update();
+}
+
+
+std::string BigInt::ToString()
+{
+    std::string result = "";
+    return result;
+
+
+}
+bool BigInt::FromString(std::string input)
+{
+    char c=0;
+    Reset();
+    for (int i = 0; i < input.length(); i++) {
+        c = input[i];
+        int x=0;
+        if (c >= '0' && c <= '9')
+            x = c - '0';
+        else if (c >= 'A' && c <= 'F')
+            x = c - 'A'  + 10;
+
+        //add this char to value
+        
+        this->Multiply_to_2();
+        this->Multiply_to_2();
+        this->Multiply_to_2();
+        this->Multiply_to_2();
+        
+        for (int j = 0; j < 4; j++) {
+            this->bnumber[head+j] = (bool)(x%2);
+            x /= 2;
+        }
+        if (i == 0)
+            this->tail = 3;
+    }
+    this->Update();
+    return true;
 }

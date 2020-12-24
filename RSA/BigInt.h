@@ -39,6 +39,7 @@ public:
 	};
 
     BigInt(const BigInt& other);
+    BigInt(std::string input);
 
     BigInt(long long int number);
 
@@ -57,6 +58,10 @@ public:
     void Multiply_to_2();
     bool isPositive();
     void RandomPrimeCandidate();
+    void Random(int minnumbers, int maxnumbers);
+
+    std::string ToString();
+    bool FromString(std::string input);
 
     friend bool operator == (BigInt first, BigInt second); 
 
@@ -82,8 +87,8 @@ public:
 
     
 
-    friend BigInt Plus (BigInt first, BigInt second);
-
+    friend BigInt Plus(BigInt first, BigInt second);
+  
     
     friend BigInt Minus(BigInt first, BigInt second);
 

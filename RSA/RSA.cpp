@@ -3,6 +3,8 @@
 #include "StdAfx.h"
 #endif
 #include "RSA.h"
+
+
 #define PRIME true
 #define COMPOSITE false
 
@@ -15,6 +17,7 @@ CRSA::CRSA(void)
 CRSA::~CRSA(void)
 {
 }
+
 
 
 BigInt CRSA::gcd(BigInt a, BigInt b)
@@ -53,15 +56,15 @@ BigInt CRSA::gcd(BigInt a, BigInt b)
 
 
 
-bool CRSA::fermat_testing(BigInt N, int a) {
+bool CRSA::fermat_testing(BigInt n, int a) {
     BigInt Ba(a);
 
-    if (gcd(Ba, N) != 1) {
+    if (gcd(Ba, n) != 1) {
         return COMPOSITE;
     }
     else {
-        BigInt n_1 = Minus(N , 1);
-		BigInt power_result = PowerMod(a, n_1, N);
+        BigInt n_1 = Minus(n , 1);
+		BigInt power_result = PowerMod(a, n_1, n);
 		if (power_result != 1) {
         //if (PowerMod(a, Minus(N , 1), N) != 1) {
             return COMPOSITE;
@@ -98,15 +101,15 @@ BigInt CRSA::PrimeGen() {
 BigInt CRSA::rel_prime(BigInt phi)
 {
     BigInt rel = 5;
-
+    rel.Random(50, 100);
     while (gcd(phi, rel) != 1)
         rel = Plus(rel , 1);
     return rel;
 }
 
-BigInt CRSA::encrypt(BigInt N, BigInt e, BigInt M)
+BigInt CRSA::encrypt(BigInt m)
 {
-    BigInt c=PowerMod(M,e,N);
+    BigInt c=PowerMod(m,E,N);
     
     return c;
 }
@@ -149,39 +152,39 @@ BigInt CRSA::calculate_d(BigInt phi, BigInt  e)
     return inv;
 }
 
-BigInt CRSA::decrypt(BigInt c,BigInt  d,BigInt  N)
+BigInt CRSA::decrypt(BigInt c)
 {
-	BigInt m = PowerMod(c,d,N);	
+	BigInt m = PowerMod(c,D,N);	
     return m;
 }
-
-int main()
-{
-    
+void CRSA::Init() {
     srand(time(NULL));
-    CRSA rsa;
-    //BigInt x(28657);
-    //bool res = rsa.fermat_testing(x);
-    //int d1 = calculate_d(20,7);
+    BigInt P = PrimeGen();
+    BigInt Q = PrimeGen();
 
-    //BigInt x(1000000000);
-    //BigInt y(3);
-    //BigInt z = Modulo2(x, y);
-   
-    BigInt P = rsa.PrimeGen();
-    BigInt Q = rsa.PrimeGen();
-
-    BigInt N = Multiply(P, Q);
+    N = Multiply(P, Q);
     BigInt phi = Multiply(Minus(P, 1), Minus(Q, 1));
 
-    BigInt e = rsa.rel_prime(phi);
-    BigInt d = rsa.calculate_d(phi, e);
+    E = rel_prime(phi);
+    D = calculate_d(phi, E);
+}
+int main()
+{
+    std::string input = "10";
+    BigInt A(input);
+    /*
+    CRSA rsa;
+
+   
+    rsa.Init();
 
     BigInt M = 6;
 
-    BigInt c = rsa.encrypt(N, e, M);
+    BigInt c = rsa.encrypt(M);
 
-    BigInt M1 = rsa.decrypt(c, d, N);
-    
+    BigInt M1 = rsa.decrypt(c);
+    */
+
+
     return 0;
 }
