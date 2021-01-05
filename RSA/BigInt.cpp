@@ -560,6 +560,24 @@ void BigInt::Random(int minnumbers, int maxnumbers) {
 std::string BigInt::ToString()
 {
     std::string result = "";
+    char c = 0;
+    BigInt temp = *this;
+    int pos = temp.head;
+    while (pos <= temp.tail)
+    {
+        c = 0;
+        for (int j = 3; j >= 0; j--) {
+            if (pos + j <= temp.tail) {
+                c = c * 2 + temp.bnumber[pos + j];
+            }
+        }
+        if (c >= 0 && c <= 9)
+            c = c + '0';
+        else if (c >= 10 && c <= 15)
+            c = c + 'A'  - 10;
+        result = c + result;
+        pos+=4;
+    }
     return result;
 
 

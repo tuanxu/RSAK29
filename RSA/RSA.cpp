@@ -3,7 +3,8 @@
 #include "StdAfx.h"
 #endif
 #include "RSA.h"
-
+#include <iostream>
+#include <fstream>
 
 #define PRIME true
 #define COMPOSITE false
@@ -168,23 +169,59 @@ void CRSA::Init() {
     E = rel_prime(phi);
     D = calculate_d(phi, E);
 }
+void CRSA::Init(BigInt _N, BigInt _E, BigInt _D)
+{
+    N = _N;
+    E = _E;
+    D = _D;
+}
+void CRSA::SaveKeyToFile(const char* filename) {
+    std::ofstream fKey(filename);
+    fKey << N.ToString() << std::endl;
+    fKey << E.ToString() << std::endl;
+    fKey << D.ToString() << std::endl;
+    fKey.close();
+
+}
+void CRSA::LoadKeyFromFile(const char* filename) {
+
+    std::ifstream fKey(filename);
+
+    std::string inputN = "";
+    std::string inputE = "";
+    std::string inputD = "";
+    fKey >> inputN;
+    fKey >> inputE;
+    fKey >> inputD;
+    fKey.close();
+
+    N.FromString(inputN);
+    E.FromString(inputE);
+    D.FromString(inputD);
+
+}
 int main()
 {
-    std::string input = "10";
-    BigInt A(input);
-    /*
+    //std::string strN = "10";
+    //std::string strE = "20";
+    //std::string strD = "30";
+    //BigInt N(strN);
+    //BigInt E(strE);
+    //BigInt D(strD);
+    
     CRSA rsa;
-
-   
     rsa.Init();
+    rsa.SaveKeyToFile("key.txt");
+    rsa.LoadKeyFromFile("key.txt");
+    
+   
+    //rsa.Init();
 
     BigInt M = 6;
 
     BigInt c = rsa.encrypt(M);
 
     BigInt M1 = rsa.decrypt(c);
-    */
-
-
+    
     return 0;
 }
