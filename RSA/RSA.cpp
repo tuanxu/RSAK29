@@ -200,7 +200,7 @@ void CRSA::LoadKeyFromFile(const char* filename) {
     D.FromString(inputD);
 
 }
-int main()
+int main(int argc, char* argv[])
 {
     //std::string strN = "10";
     //std::string strE = "20";
@@ -209,19 +209,61 @@ int main()
     //BigInt E(strE);
     //BigInt D(strD);
     
-    CRSA rsa;
-    rsa.Init();
-    rsa.SaveKeyToFile("key.txt");
-    rsa.LoadKeyFromFile("key.txt");
+    //CRSA rsa;
+    //rsa.Init();
+    //rsa.SaveKeyToFile("key.txt");
+    //rsa.LoadKeyFromFile("key.txt");
     
    
     //rsa.Init();
 
-    BigInt M = 6;
+    //BigInt M = 6;
 
-    BigInt c = rsa.encrypt(M);
+    //BigInt c = rsa.encrypt(M);
 
-    BigInt M1 = rsa.decrypt(c);
+    //BigInt M1 = rsa.decrypt(c);
+    CRSA rsa;
+    rsa.LoadKeyFromFile("key.txt");
+
+    //test
+    /*BigInt M("A");
+    BigInt C = rsa.encrypt(M);
+    std::string strC = C.ToString();
+    BigInt C1(strC);
     
+
+
+
+    BigInt m1 = rsa.decrypt(C1);
+*/
+    if (_strcmpi(argv[1], "init") == 0)
+    {
+        rsa.Init();
+        rsa.SaveKeyToFile("key.txt");
+        std::cout << "rsa-init";
+    }
+    else if (_strcmpi(argv[1], "getpublickey") == 0)
+    {
+        std::cout << rsa.N.ToString();
+        std::cout << "-";
+        std::cout << rsa.E.ToString();
+    }
+    else if (_strcmpi(argv[1], "encrypt") == 0)
+    {
+        //std::cout << "encrypt";
+        std::string strM = argv[2];
+        BigInt M(strM);
+        BigInt c = rsa.encrypt(M);
+        std::cout << c.ToString();
+
+    }
+    else if (_strcmpi(argv[1], "decrypt") == 0)
+    {
+        //std::cout << "dencrypt";
+        std::string strC = argv[2];
+        BigInt C(strC);
+        BigInt M = rsa.decrypt(C);
+        std::cout << M.ToString();
+    }
     return 0;
 }
