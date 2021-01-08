@@ -15,15 +15,13 @@
   </div>
 	
   <form>
-  	<?php include('errors.php'); 
-	
-	     if (isset($_SESSION['username']))  
-			echo "<script> glb_username ='" . $_SESSION['username'] . "'</script>"; 
-		
-    
+	<?php include ('errors.php');
+
+	if (isset($_SESSION['username'])) 
+		echo "<script> glb_username ='" . $_SESSION['username'] . "'</script>";
 	else 
 		echo "<script> glb_username ='NotLogin'</script>";
-	 ?>
+	?>
 	<!-- INIT RSA -->
 	<div class="input-group">
   	  <button type="button" class="btn" onclick="InitRSA()">Init RSA</button>
@@ -38,6 +36,15 @@
 	<div>PublicKey:  <label id="lblGetPublicKey_Response"></label></div>
 	<div>PublicKey_N:  <label id="lblGetPublicKey_N_Response"></label></div>
 	<div>PublicKey_E:  <label id="lblGetPublicKey_E_Response"></label></div>
+	
+	<!-- GET PRIVATE KEY -->
+	<div class="input-group">
+  	  <button type="button" class="btn" onclick="GetPrivateKey()">Get Private key</button>
+  	</div>
+	<div>PrivateKey:  <label id="lblGetPrivateKey_Response"></label></div>
+	<div>PrivateKey_N:  <label id="lblGetPrivateKey_N_Response"></label></div>
+	<div>PrivateKey_E:  <label id="lblGetPrivateKey_E_Response"></label></div>
+	<div>PrivateKey_D:  <label id="lblGetPrivateKey_D_Response"></label></div>
 	
   	<div class="input-group">
   	  <label>Message need to send:</label>

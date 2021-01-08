@@ -200,6 +200,16 @@ void CRSA::LoadKeyFromFile(const char* filename) {
     D.FromString(inputD);
 
 }
+void CRSA::LoadKeyFromClient(std::string inputN, std::string inputE) {
+
+
+
+    N.FromString(inputN);
+    E.FromString(inputE);
+    
+
+}
+
 int main(int argc, char* argv[])
 {
 
@@ -219,6 +229,17 @@ int main(int argc, char* argv[])
         std::cout << "-";
         std::cout << rsa.E.ToString();
     }
+    else if (_strcmpi(argv[1], "getprivatekey") == 0)
+    {
+        CRSA rsaPrivate;
+        rsaPrivate.Init();
+        rsaPrivate.SaveKeyToFile("keyPrivate.txt");
+        std::cout << rsaPrivate.N.ToString();
+        std::cout << "-";
+        std::cout << rsaPrivate.E.ToString();
+        std::cout << "-";
+        std::cout << rsaPrivate.D.ToString();
+    }
     else if (_strcmpi(argv[1], "encrypt") == 0)
     {
         //std::cout << "encrypt";
@@ -228,6 +249,28 @@ int main(int argc, char* argv[])
             BigInt c = rsa.encrypt(M);
             std::cout << c.ToString();
             if(it < strM.end() -1)
+                std::cout << "-";
+            //std::cout << (*it);
+        }
+
+
+
+    }
+    else if (_strcmpi(argv[1], "encryptwithclientkey") == 0)
+    {
+        std::string strM = argv[2];
+        std::string strClientN = argv[3];
+        std::string strClientE = argv[4];
+
+        CRSA rsaPrivate;
+       
+        rsaPrivate.LoadKeyFromClient(strClientN, strClientE);
+        
+        for (std::string::iterator it = strM.begin(); it != strM.end(); ++it) {
+            BigInt M(*it);
+            BigInt c = rsaPrivate.encrypt(M);
+            std::cout << c.ToString();
+            if (it < strM.end() - 1)
                 std::cout << "-";
             //std::cout << (*it);
         }
@@ -251,25 +294,6 @@ int main(int argc, char* argv[])
             std::cout << c;
             
             token = strtok_s(NULL, "-" ,&next_token1);
-        }
-
-    }
-    else if (_strcmpi(argv[1], "decrypt") == 0)
-    {
-        //std::cout << "dencrypt";
-        char* strC = argv[2];
-        char* next_token1 = NULL;
-        char* token = strtok_s(strC, "-", &next_token1);
-        while (token != NULL)
-        {
-
-            BigInt C(token);
-            BigInt M = rsa.decrypt(C);
-            char c = M._value;
-
-            std::cout << c;
-
-            token = strtok_s(NULL, "-", &next_token1);
         }
 
     }

@@ -31,6 +31,7 @@ BigInt decrypt(BigInt c);
 
 void SaveKeyToFile(const char* filename);
 void LoadKeyFromFile(const char* filename);
+void LoadKeyFromClient(std::string inputN, std::string inputE);
 
 };
 
