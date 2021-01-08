@@ -69,15 +69,12 @@ if (isset($_POST['login_user'])) {
   }
 
   if (count($errors) == 0) {
-  	//$password = md5($password);
 	
   	$query = "SELECT password FROM users WHERE username='$username' limit 1";
   	$results = mysqli_query($db, $query);
   	if (mysqli_num_rows($results) == 1) {
 	  $row = mysqli_fetch_array($results);
 	  $password_hash_stored = $row[0];
-	  //echo $password;
-	  //$password = password_hash($password, PASSWORD_DEFAULT);//old source using md5 but us using BCRYPT HASH
 	  
 	  if (password_verify($password, $password_hash_stored)) {
 		  $_SESSION['username'] = $username;
@@ -92,5 +89,11 @@ if (isset($_POST['login_user'])) {
   	}
   }
 }
+function InsertChat($username,$message,$encrypted_message,$response,$encrypted_response) {
+	global $db;
+    	$query = "INSERT INTO chats (username,message,encrypted_message,response,encrypted_response) 
+  			  VALUES('$username', '$message', '$encrypted_message', '$response', '$encrypted_response')";
+  	mysqli_query($db, $query);
 
+} 
 ?>
