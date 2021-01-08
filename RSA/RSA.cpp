@@ -202,45 +202,16 @@ void CRSA::LoadKeyFromFile(const char* filename) {
 }
 int main(int argc, char* argv[])
 {
-    //std::string strN = "10";
-    //std::string strE = "20";
-    //std::string strD = "30";
-    //BigInt N(strN);
-    //BigInt E(strE);
-    //BigInt D(strD);
-    
-    //CRSA rsa;
-    //rsa.Init();
-    //rsa.SaveKeyToFile("key.txt");
-    //rsa.LoadKeyFromFile("key.txt");
-    
-   
-    //rsa.Init();
 
-    //BigInt M = 6;
-
-    //BigInt c = rsa.encrypt(M);
-
-    //BigInt M1 = rsa.decrypt(c);
     CRSA rsa;
     rsa.LoadKeyFromFile("key.txt");
 
-    //test
-    /*BigInt M("A");
-    BigInt C = rsa.encrypt(M);
-    std::string strC = C.ToString();
-    BigInt C1(strC);
     
-
-
-
-    BigInt m1 = rsa.decrypt(C1);
-*/
     if (_strcmpi(argv[1], "init") == 0)
     {
         rsa.Init();
         rsa.SaveKeyToFile("key.txt");
-        std::cout << "rsa-init";
+        std::cout << "rsa-inited";
     }
     else if (_strcmpi(argv[1], "getpublickey") == 0)
     {
@@ -280,6 +251,25 @@ int main(int argc, char* argv[])
             std::cout << c;
             
             token = strtok_s(NULL, "-" ,&next_token1);
+        }
+
+    }
+    else if (_strcmpi(argv[1], "decrypt") == 0)
+    {
+        //std::cout << "dencrypt";
+        char* strC = argv[2];
+        char* next_token1 = NULL;
+        char* token = strtok_s(strC, "-", &next_token1);
+        while (token != NULL)
+        {
+
+            BigInt C(token);
+            BigInt M = rsa.decrypt(C);
+            char c = M._value;
+
+            std::cout << c;
+
+            token = strtok_s(NULL, "-", &next_token1);
         }
 
     }
