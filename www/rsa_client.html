@@ -1,0 +1,64 @@
+    <!DOCTYPE html>
+    <html lang="en-US">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Time right now is: </title>
+    </head>
+    <body>
+	
+	<script src="BigInteger.min.js"></script>
+<script>
+var public_key = "4B12115804F67CA13027063AF80089129959-528A7356857AF4A27F103A29";
+
+function InitRSA() {
+	var p = 53; q = 61;
+	var N = p*q;
+	alert("N=" + N);
+	var e = 7;
+	var d = 1783;
+	var m = 999;
+	var c = bigInt(m).modPow (e,N);
+	alert("c=" + c);
+    var x = bigInt(c).modPow (d,N);
+	alert("x=" + x);
+}
+ function Decrypt() {
+	
+	var keys = public_key.split('-');
+	var strN = keys[0];
+	var strE = keys[1];
+	var N = new bigInt(strN, 16); 
+	var E = new bigInt(strE, 16); 
+	var D = new bigInt("1B9023EEEC5D7FEA14F04314F7662450C581", 16); 
+	
+	var m = bigInt(65);
+	var c = m.modPow (E,N);
+	console.log(c.toString(10));
+	console.log(c.toString(16));
+	
+	var x = c.modPow (D,N);
+	console.log(x.toString(10));
+} 
+function test() {
+
+	var c = bigInt(1234567890);
+	console.log(c.toString(10));
+	console.log(c.toString(16));
+	
+	
+} 
+ </script>
+	
+
+
+<h2>RSA Javascript</h2>
+ <form>
+ <!-- INIT RSA -->
+  <input type="button" value="Init RSA" onclick="Decrypt()">
+  <label id="lblInitRSA_Response"></label><br><br>
+  
+</form> 
+
+    </body>
+    </html>
