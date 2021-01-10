@@ -8,11 +8,12 @@ if($task_from_client == "receivedfromclient"){
 	$encrypted_message = $_GET['m'];
 	$client_public_key_n = $_GET['privatekeyn'];
 	$client_public_key_e = $_GET['privatekeye'];
-	
+	//echo "RSA.exe decrypt $encrypted_message" . "<br>";
 	$message = shell_exec("RSA.exe decrypt $encrypted_message");
 	$response = "Get-" . $message;
-	
-	$encrypted_response = shell_exec("RSA.exe encryptwithclientkey $response $client_public_key_n $client_public_key_e");
+	//echo $response . "<br>";
+	//echo "RSA.exe encryptwithclientkey $response $client_public_key_n $client_public_key_e" . "<br>";
+	$encrypted_response = shell_exec("RSA.exe encryptwithclientkey \"$response\" $client_public_key_n $client_public_key_e");
 	InsertChat($username,$message,$encrypted_message,$response,$encrypted_response);
 	echo $encrypted_response;
 }

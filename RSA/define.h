@@ -1,1 +1,1 @@
-#define VS_2010 1
+#define VS_2010 0

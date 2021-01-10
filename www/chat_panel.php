@@ -26,25 +26,25 @@
 	<div class="input-group">
   	  <button type="button" class="btn" onclick="InitRSA()">Init RSA</button>
   	</div>
-	<div> <label id="lblInitRSA_Response"></label></div>
+	<div> <label id="lblInitRSA_Response" class="label success"></label></div>
 
   
 	<!-- GET PUBLIC KEY -->
 	<div class="input-group">
   	  <button type="button" class="btn" onclick="GetPublicKey()">Get public key</button>
   	</div>
-	<div>PublicKey:  <label id="lblGetPublicKey_Response"></label></div>
-	<div>PublicKey_N:  <label id="lblGetPublicKey_N_Response"></label></div>
-	<div>PublicKey_E:  <label id="lblGetPublicKey_E_Response"></label></div>
+	<div>PublicKey:  <label id="lblGetPublicKey_Response" class="label success"></label></div>
+	<div>PublicKey_N:  <label id="lblGetPublicKey_N_Response" class="label success"></label></div>
+	<div>PublicKey_E:  <label id="lblGetPublicKey_E_Response" class="label success"></label></div>
 	
 	<!-- GET PRIVATE KEY -->
 	<div class="input-group">
   	  <button type="button" class="btn" onclick="GetPrivateKey()">Get Private key</button>
   	</div>
-	<div>PrivateKey:  <label id="lblGetPrivateKey_Response"></label></div>
-	<div>PrivateKey_N:  <label id="lblGetPrivateKey_N_Response"></label></div>
-	<div>PrivateKey_E:  <label id="lblGetPrivateKey_E_Response"></label></div>
-	<div>PrivateKey_D:  <label id="lblGetPrivateKey_D_Response"></label></div>
+	<div>PrivateKey:  <label id="lblGetPrivateKey_Response" class="label success"></label></div>
+	<div>PrivateKey_N:  <label id="lblGetPrivateKey_N_Response" class="label success"></label></div>
+	<div>PrivateKey_E:  <label id="lblGetPrivateKey_E_Response" class="label success"></label></div>
+	<div>PrivateKey_D:  <label id="lblGetPrivateKey_D_Response" class="label success"></label></div>
 	
   	<div class="input-group">
   	  <label>Message need to send:</label>
@@ -54,11 +54,11 @@
   	<div class="input-group">
   	  <button type="button" class="btn" onclick="EncryptMessageAndSend()">Encrypt Message And Send</button>
   	  <label>Encrypted message:</label>
-  	  <label id="lblEncryptedMessage">.</label>
+  	  <label id="lblEncryptedMessage" class="label success"></label>
   	  <label>Response message from server:</label>
-  	  <label id="lblResponseMessage">.</label>
+  	  <label id="lblResponseMessage" class="label success"></label>
   	  <label>Response message decrypted from server:</label>
-  	  <label id="lblResponseMessageDecrypted">.</label>
+  	  <label id="lblResponseMessageDecrypted" class="label success"></label>
   	</div>	
 	
   	<p>

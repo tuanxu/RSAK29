@@ -240,6 +240,16 @@ int main(int argc, char* argv[])
         std::cout << "-";
         std::cout << rsaPrivate.D.ToString();
     }
+    else if (_strcmpi(argv[1], "getexistprivatekey") == 0)
+    {
+        
+        rsa.LoadKeyFromFile("keyPrivate.txt");
+        std::cout << rsa.N.ToString();
+        std::cout << "-";
+        std::cout << rsa.E.ToString();
+        std::cout << "-";
+        std::cout << rsa.D.ToString();
+    }
     else if (_strcmpi(argv[1], "encrypt") == 0)
     {
         //std::cout << "encrypt";
